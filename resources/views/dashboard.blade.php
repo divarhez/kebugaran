@@ -51,10 +51,64 @@
         <article class="rounded-[32px] border border-slate-200 bg-white/90 p-6 shadow-sm">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Tugas harian</p>
-                    <h2 class="mt-2 text-2xl font-semibold text-slate-900">Selesaikan kebiasaan sehat</h2>
+                    <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Goal kesehatan</p>
+                    <h2 class="mt-2 text-2xl font-semibold text-slate-900">Target harianmu</h2>
                 </div>
-                <p class="max-w-xl text-sm text-slate-600">Tiap tugas memberi poin supaya kamu dapat naik level dan membentuk rutinitas sehat.</p>
+                <p class="max-w-xl text-sm text-slate-600">Atur target berat badan, air, langkah, dan tidur supaya rutinitas sehatmu lebih terarah.</p>
+            </div>
+
+            <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                    <p class="text-sm text-slate-500">Target berat badan</p>
+                    <p class="mt-2 text-3xl font-semibold text-slate-900">{{ $user->goal_weight ? $user->goal_weight . ' kg' : 'Belum diatur' }}</p>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                    <p class="text-sm text-slate-500">Target minum air</p>
+                    <p class="mt-2 text-3xl font-semibold text-slate-900">{{ $user->goal_water ? $user->goal_water . ' gelas' : 'Belum diatur' }}</p>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                    <p class="text-sm text-slate-500">Target langkah</p>
+                    <p class="mt-2 text-3xl font-semibold text-slate-900">{{ $user->goal_steps ? number_format($user->goal_steps) . ' langkah' : 'Belum diatur' }}</p>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                    <p class="text-sm text-slate-500">Target tidur</p>
+                    <p class="mt-2 text-3xl font-semibold text-slate-900">{{ $user->goal_sleep ? $user->goal_sleep . ' jam' : 'Belum diatur' }}</p>
+                </div>
+            </div>
+
+            <form action="{{ route('profile.goals.update') }}" method="POST" class="mt-6 grid gap-4 lg:grid-cols-2">
+                @csrf
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-slate-700">Berat target (kg)</label>
+                    <input type="number" name="goal_weight" step="0.1" min="0" value="{{ old('goal_weight', $user->goal_weight) }}" class="w-full rounded-2xl border border-slate-300 px-4 py-3 focus:border-slate-900">
+                    @error('goal_weight')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
+                </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-slate-700">Gelas air per hari</label>
+                    <input type="number" name="goal_water" min="0" value="{{ old('goal_water', $user->goal_water) }}" class="w-full rounded-2xl border border-slate-300 px-4 py-3 focus:border-slate-900">
+                    @error('goal_water')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
+                </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-slate-700">Langkah per hari</label>
+                    <input type="number" name="goal_steps" min="0" value="{{ old('goal_steps', $user->goal_steps) }}" class="w-full rounded-2xl border border-slate-300 px-4 py-3 focus:border-slate-900">
+                    @error('goal_steps')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
+                </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium text-slate-700">Jam tidur per hari</label>
+                    <input type="number" name="goal_sleep" step="0.1" min="0" max="24" value="{{ old('goal_sleep', $user->goal_sleep) }}" class="w-full rounded-2xl border border-slate-300 px-4 py-3 focus:border-slate-900">
+                    @error('goal_sleep')<p class="text-sm text-rose-600">{{ $message }}</p>@enderror
+                </div>
+                <button type="submit" class="lg:col-span-2 rounded-2xl bg-slate-900 px-4 py-3 text-white transition hover:bg-slate-800">Simpan target kesehatan</button>
+            </form>
+        </article>
+
+        <article class="rounded-[32px] border border-slate-200 bg-white/90 p-6 shadow-sm">
+            <div class="flex items-center justify-between gap-4">
+                <div>
+                    <p class="text-sm uppercase tracking-[0.18em] text-slate-500">Riwayat 7 hari</p>
+                    <h2 class="mt-2 text-2xl font-semibold text-slate-900">Perkembanganmu minggu ini</h2>
+                </div>
+                <p class="text-sm text-slate-600">Lihat kebiasaan harian dan gunakan tren ini untuk tetap konsisten.</p>
             </div>
 
             <div class="mt-6 grid gap-4 sm:grid-cols-2">
@@ -156,4 +210,5 @@
         </article>
     </section>
 </div>
+
 @endsection

@@ -26,6 +26,10 @@ class User extends Authenticatable
         'password',
         'experience',
         'role',
+        'goal_weight',
+        'goal_water',
+        'goal_steps',
+        'goal_sleep',
     ];
 
     /**
@@ -48,6 +52,10 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'goal_weight' => 'float',
+            'goal_water' => 'integer',
+            'goal_steps' => 'integer',
+            'goal_sleep' => 'float',
         ];
     }
 

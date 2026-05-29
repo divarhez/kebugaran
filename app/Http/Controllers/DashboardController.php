@@ -14,6 +14,11 @@ class DashboardController extends Controller
     {
         /** @var User $user */
         $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         $today = now()->toDateString();
 
         $tasks = HealthTask::orderBy('points', 'desc')->get();
@@ -23,7 +28,10 @@ class DashboardController extends Controller
             ->all();
 
         $entry = $user->dailyEntries()->firstWhere('date', $today);
-        $weeklyEntries = $user->dailyEntries()->orderByDesc('date')->take(7)->get();
+        $weeklyEntries = $user->dailyEntries()
+            ->whereBetween('date', [now()->subDays(6)->toDateString(), $today])
+            ->orderBy('date')
+            ->get();
         $weeklyXp = $weeklyEntries->sum('points_earned');
         $streak = $this->calculateCurrentStreak($weeklyEntries, $today);
 
@@ -37,6 +45,22 @@ class DashboardController extends Controller
             'streak' => $streak,
             'today' => $today,
         ]);
+    }
+
+    public function updateGoals(Request $request)
+    {
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'goal_weight' => ['nullable', 'numeric', 'min:0'],
+            'goal_water' => ['nullable', 'integer', 'min:0'],
+            'goal_steps' => ['nullable', 'integer', 'min:0'],
+            'goal_sleep' => ['nullable', 'numeric', 'min:0', 'max:24'],
+        ]);
+
+        $user->update($data);
+
+        return back()->with('status', 'Target kesehatan berhasil diperbarui.');
     }
 
     private function calculateCurrentStreak($entries, $today)
